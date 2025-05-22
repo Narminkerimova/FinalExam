@@ -1,14 +1,21 @@
-import React, { useContext } from 'react'
-import { MainContext } from '../context/MainProvider'
+import { useContext } from "react"
+import {MainContext} from "./../context/MainProvider"
 import {Link} from "react-router"
-import "./style.css"
 
-function Cards() {
-    const {product,addBasket,addWish} = useContext(MainContext)
+function Wish() {
+    const {wish,addWish,removeWish,totalWish} = useContext(MainContext)
+
+
+    if(wish.length===0){
+        return <p>wishde hecne yoxdur</p>
+    }
   return (
+    <>
+    <title>Wish</title>
+    <h1>Total:{totalWish()}</h1>
     <div className="container">
         {
-            product.map(x=>(
+            wish.map(x=>(
                 <div className="card" key={x._id}>
                     <div className="card_image">
                         <img src={x.image} alt="prod" />
@@ -20,13 +27,15 @@ function Cards() {
                         <button>Info</button>
                         </Link>
                         <button onClick={()=>addBasket(x)}>Basket</button>
-                        <button onClick={()=>addWish(x)}>Wish</button>
+                        <button onClick={()=>removeWish(x._id)}>Remove</button>
                     </div>
                 </div>
             ))
         }
     </div>
+    </>
+        
   )
 }
 
-export default Cards
+export default Wish

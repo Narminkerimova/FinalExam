@@ -5,6 +5,8 @@ export const MainContext = createContext()
 function MainProvider({ children }) {
     const url = "http://localhost:3000/chairs/"
     const [product, setProduct] = useState([])
+    const [basket, setbasket] = useState([])
+    const [wish, setwish] = useState([])
 
     async function getElement(url) {
         const res = await fetch(url)
@@ -31,6 +33,63 @@ function MainProvider({ children }) {
         setProduct(data)
     }
 
+    function addBasket(obj) {
+        const addedElement = basket.find(x => x._id === obj._id)
+        if (addedElement) {
+            addedElement.count++
+            setbasket([...basket])
+        }
+        else {
+            setbasket([...basket, { ...obj, count: 1 }])
+
+        }
+    }
+
+    function decreaseBasket(obj) {
+        const addedElement = basket.find(x => x._id === obj._id)
+        if (addedElement.count === 1) {
+            return
+        }
+        else {
+            addedElement.count--
+            setbasket([...basket])
+        }
+    }
+
+    function removeBasket(id){
+        setbasket(basket.filter(x=>x._id!==id))
+    }
+
+    function totalBasket() {
+        return basket.reduce((total,initial)=>(total+(initial.price*initial.count)),0)
+    }
+
+    function addWish(obj) {
+        const addWish=wish.find(x=>x._id===obj._id)
+        if(addWish){
+            return
+        }
+        else{
+            setwish([...wish,obj])
+        }
+    }
+
+    function removeWish(id){
+        setwish(wish.filter(x=>x._id!==id))
+    }
+
+     function totalWish() {
+        return wish.reduce((total,initial)=>(total+initial.price),0)
+    }
+
+
+
+
+
+
+
+
+
     useEffect(() => {
         getElement(url)
     }, [])
@@ -38,7 +97,7 @@ function MainProvider({ children }) {
 
 
     return (
-        <MainContext.Provider value={{ product, deleteElement, url, postElement }}>
+        <MainContext.Provider value={{ product, deleteElement, url, postElement, addBasket, basket,decreaseBasket,removeBasket,totalBasket,addWish,wish,removeWish,totalWish }}>
             {children}
         </MainContext.Provider>
     )
